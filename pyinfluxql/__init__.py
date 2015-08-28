@@ -8,7 +8,7 @@
 
 __version__ = '0.0.1'
 
-from .query import Query, ContinuousQuery
+from .query import Query
 
 
 class Engine(object):
