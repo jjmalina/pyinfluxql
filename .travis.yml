@@ -1,0 +1,12 @@
+language: python
+before_install:
+    - pip install tox
+    - wget https://s3.amazonaws.com/influxdb/influxdb_0.9.3_amd64.deb
+    - mkdir influxdb_install
+    - dpkg -x influxdb_0.9.3_amd64.deb influxdb_install
+    - influxdb_install/opt/influxdb/versions/0.9.3/influxd &
+
+script:
+    - tox
+
+sudo: false

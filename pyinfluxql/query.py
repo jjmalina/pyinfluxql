@@ -24,7 +24,7 @@ class Query(object):
         'lt': '<',
         'lte': '<='
     }
-    _numeric_types = {int, float}
+    _numeric_types = (int, float)
     _order_identifiers = {'asc', 'desc'}
 
     def __init__(self, *expressions):
@@ -83,16 +83,15 @@ class Query(object):
         return clause
 
     def _format_value(self, value):
-        val_type = type(value)
-        if val_type in six.string_types:
+        if isinstance(value, six.string_types):
             if value[0] == '/':
                 return value
             return "'%s'" % value
-        elif val_type in self._numeric_types:
-            return "%r" % value
-        elif val_type is bool:
+        elif type(value) is bool:
             return format_boolean(value)
-        elif val_type is datetime.datetime:
+        elif isinstance(value, self._numeric_types):
+            return "%r" % value
+        elif isinstance(value, datetime.datetime):
             dt = datetime.datetime.strftime(value, "%Y-%m-%d %H:%M:%S.%f")
             return "'%s'" % dt[:-3]
 
@@ -130,7 +129,7 @@ class Query(object):
                 time_fmt = None
                 if isinstance(self._group_by_time, datetime.timedelta):
                     time_fmt = "time(%s)" % format_timedelta(self._group_by_time)
-                elif isinstance(self._group_by_time, str) or isinstance(self._group_by_time, unicode):
+                elif isinstance(self._group_by_time, six.string_types):
                     time_fmt = "time(%s)" % self._group_by_time
                 if time_fmt is not None:
                     time_format.append(time_fmt)
