@@ -8,6 +8,9 @@
 
 import pytest
 from influxdb import InfluxDBClient
+from datetime import datetime, timedelta
+import random
+from pyinfluxql import Engine
 
 influxdb_settings = {
     'INFLUXDB_HOST': 'localhost',
@@ -41,3 +44,31 @@ def influx_db():
     yield _influxdb
 
     _del()
+
+
+@pytest.fixture(scope='module')
+def date_range():
+    start = datetime(2015, 6, 6)
+    return start, start + timedelta(hours=250)
+
+
+@pytest.fixture(scope='module')
+def engine(influx_db, date_range):
+    start = date_range[0]
+    series = []
+    random.seed(5)
+    for i in range(250):
+        time = start + timedelta(hours=i)
+        series.append({
+            "measurement": "deliciousness",
+            "tags": {
+                "dish": "pie" if i % 2 == 0 else "pizza"
+            },
+            "time": time,
+            "fields": {
+                "value": int(random.random() * 5)
+            }
+        })
+
+    influx_db.write_points(series)
+    return Engine(influx_db)
