@@ -9,7 +9,7 @@
 import six
 import pytest
 from datetime import datetime, timedelta
-
+import dateutil
 from pyinfluxql.functions import Sum, Min, Max, Count, Distinct, Percentile
 from pyinfluxql.query import Query, ContinuousQuery
 
@@ -154,6 +154,10 @@ def test_format_value():
     assert q._format_value('/stats.*/') == "/stats.*/"
     assert q._format_value(datetime(2014, 2, 10, 18, 4, 53, 834825)) == \
         "'2014-02-10 18:04:53.834'"
+    assert q._format_value(
+        datetime(2014, 2, 10, 18, 4, 53, 834825)
+            .replace(tzinfo=dateutil.tz.gettz('US/Eastern'))) == \
+        "'2014-02-10 23:04:53.834'"
 
 
 @pytest.mark.unit
