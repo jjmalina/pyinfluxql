@@ -10,9 +10,11 @@ import re
 import six
 import datetime
 from copy import copy, deepcopy
-
+from dateutil.tz import tzutc
 from .functions import Func
 from .utils import format_timedelta, format_boolean
+
+UTC_TZ = tzutc()
 
 
 class Query(object):
@@ -92,6 +94,8 @@ class Query(object):
         elif isinstance(value, self._numeric_types):
             return "%r" % value
         elif isinstance(value, datetime.datetime):
+            if value.tzinfo:
+                value = value.astimezone(UTC_TZ)
             dt = datetime.datetime.strftime(value, "%Y-%m-%d %H:%M:%S.%f")
             return "'%s'" % dt[:-3]
 
