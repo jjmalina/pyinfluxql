@@ -21,7 +21,7 @@ Example
 TODO
 ~~~~
 
-- [] integration tests against an InfluxDB server
+- [X] integration tests against an InfluxDB server
 - [X] travis
 - [X] tox to test python versions
 - [] support for select expression aliases
